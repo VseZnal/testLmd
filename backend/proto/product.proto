@@ -1,0 +1,78 @@
+syntax = "proto3";
+package pb;
+option go_package = "/services/product-service/proto-product-service";
+
+import "google/api/annotations.proto";
+import "google/api/validate.proto";
+
+service ProductService {
+
+  rpc ReservationProduct (ReservationProductRequest) returns (ReservationProductResponse) {
+    option (google.api.http) = {
+      post: "/products/reservations"
+      body: "*"
+    };
+  }
+
+  rpc CancelReservationProduct (CancelReservationProductRequest) returns (CancelReservationProductResponse) {
+    option (google.api.http) = {
+      post: "/products/reservations/cancels"
+      body: "*"
+    };
+  }
+
+  rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse) {
+    option (google.api.http) = {
+      get: "/products/{id}"
+    };
+  }
+
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Reservation Product
+//------------------------------------------------------------------------------------------------------------------
+
+message ReservationProductRequest {
+  repeated int64 id = 1;
+}
+
+message ReservationProductResponse {
+  repeated string messageOk = 1;
+  repeated string messageErr = 2;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Cancel Reservation Product
+//------------------------------------------------------------------------------------------------------------------
+
+message CancelReservationProductRequest {
+  repeated int64 id = 1;
+}
+
+message CancelReservationProductResponse {
+  string message = 1;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Get All Products
+//------------------------------------------------------------------------------------------------------------------
+
+message GetAllProductsRequest {
+  int64 id = 1;
+}
+
+message GetAllProductsResponse {
+
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+
+message Product {
+  int64 id = 1;
+  string name = 2;
+  string size = 3;
+  string quantity = 4;
+}
