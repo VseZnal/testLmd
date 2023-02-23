@@ -34,12 +34,12 @@ service ProductService {
 //------------------------------------------------------------------------------------------------------------------
 
 message ReservationProductRequest {
-  repeated int64 id = 1;
+  int64 warehouseId = 1;
+  repeated int64 id = 2;
 }
 
 message ReservationProductResponse {
-  repeated string messageOk = 1;
-  repeated string messageErr = 2;
+  map<int64, string> productId = 1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -63,7 +63,7 @@ message GetAllProductsRequest {
 }
 
 message GetAllProductsResponse {
-
+  repeated Product product = 1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ message GetAllProductsResponse {
 //------------------------------------------------------------------------------------------------------------------
 
 message Product {
-  int64 id = 1;
+  int64  id = 1;
   string name = 2;
   string size = 3;
   string quantity = 4;
