@@ -2,8 +2,8 @@ syntax = "proto3";
 package pb;
 option go_package = "/services/product-service/proto-product-service";
 
-import "google/api/annotations.proto";
-import "google/api/validate.proto";
+import "backend/google/api/annotations.proto";
+import "backend/google/api/validate.proto";
 
 service ProductService {
 
@@ -23,7 +23,7 @@ service ProductService {
 
   rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse) {
     option (google.api.http) = {
-      get: "/products/{id}"
+      get: "/products/{warehouseId}"
     };
   }
 
@@ -34,8 +34,8 @@ service ProductService {
 //------------------------------------------------------------------------------------------------------------------
 
 message ReservationProductRequest {
-  int64 warehouseId = 1;
-  repeated int64 id = 2;
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
+  repeated int64 id = 2 [(validate.rules).repeated.items.int64  = {gte:0, lt: 9223372036854775807}];
 }
 
 message ReservationProductResponse {
@@ -47,7 +47,7 @@ message ReservationProductResponse {
 //------------------------------------------------------------------------------------------------------------------
 
 message CancelReservationProductRequest {
-  repeated int64 id = 1;
+  repeated int64 id = 1 [(validate.rules).repeated.items.int64 = {gte:0, lt: 9223372036854775807}];
 }
 
 message CancelReservationProductResponse {
@@ -59,7 +59,7 @@ message CancelReservationProductResponse {
 //------------------------------------------------------------------------------------------------------------------
 
 message GetAllProductsRequest {
-  int64 id = 1;
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
 }
 
 message GetAllProductsResponse {
