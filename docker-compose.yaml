@@ -1,0 +1,66 @@
+version: '3.2'
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: '${PG_USER}'
+      POSTGRES_PASSWORD: '${PG_PASSWORD}'
+      POSTGRES_DB: '${PG_DB}'
+    healthcheck:
+        test: ["CMD", "pg_isready", "-d", "${PG_DB}", "-U", "${PG_USER}"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+    ports:
+    - "${PG_PORT}:5432"
+    volumes:
+    -  'postgres:/var/lib/postgresql/data'
+    networks:
+    - mainnet
+
+  api-gateway:
+    container_name: api-gateway
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links: 
+        - postgres
+    build:
+      context: .
+      dockerfile: ./backend/services/api-gateway/Dockerfile
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+      PRODUCT_SERVICE_HOST: product-service
+      PRODUCT_SERVICE_PORT: 8080
+    ports:
+    - "${API_PORT}:8000"
+    networks:
+    - mainnet
+
+  product-service:
+    container_name: product-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+    links: 
+        - postgres
+    build:
+      context: .
+      dockerfile: ./backend/services/product-service/Dockerfile
+    environment:
+      PRODUCT_SERVICE_HOST: 0.0.0.0
+      PRODUCT_SERVICE_PORT: 8080
+      PG_CONNECTION_STRING: "postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DB}?sslmode=${PG_SSL}"
+    networks:
+    - mainnet
+
+volumes:
+  postgres:
+
+networks:
+  mainnet:
+    driver: bridge
