@@ -1,0 +1,27 @@
+###
+### Reservation Product
+
+POST http://localhost:8000/products/reservations
+Content-Type: application/json
+
+{
+  "warehouseId": 222,
+  "id": [1905133426, 971249312]
+}
+
+###
+### Cancel Reservation Product
+
+POST http://localhost:8000/products/reservations/cancels
+Content-Type: application/json
+
+{
+  "warehouseId": 222,
+  "id": [1905133426, 971249312]
+}
+
+###
+### Get All Products in warehouse
+
+GET http://localhost:8000/products/222
+Content-Type: application/json

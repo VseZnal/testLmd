@@ -1,0 +1,81 @@
+syntax = "proto3";
+package pb;
+option go_package = "/services/product-service/proto-product-service";
+
+import "backend/google/api/annotations.proto";
+import "backend/google/api/validate.proto";
+
+service ProductService {
+
+  rpc ReservationProduct (ReservationProductRequest) returns (ReservationProductResponse) {
+    option (google.api.http) = {
+      post: "/products/reservations"
+      body: "*"
+    };
+  }
+
+  rpc CancelReservationProduct (CancelReservationProductRequest) returns (CancelReservationProductResponse) {
+    option (google.api.http) = {
+      post: "/products/reservations/cancels"
+      body: "*"
+    };
+  }
+
+  rpc GetAllProducts (GetAllProductsRequest) returns (GetAllProductsResponse) {
+    option (google.api.http) = {
+      get: "/products/{warehouseId}"
+    };
+  }
+
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Reservation Product
+//------------------------------------------------------------------------------------------------------------------
+
+message ReservationProductRequest {
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
+  repeated int64 id = 2 [(validate.rules).repeated.items.int64  = {gte:0, lt: 9223372036854775807}];
+}
+
+message ReservationProductResponse {
+  map<string, string> productId = 1;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Cancel Reservation Product
+//------------------------------------------------------------------------------------------------------------------
+
+message CancelReservationProductRequest {
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
+  repeated int64 id = 2 [(validate.rules).repeated.items.int64 = {gte:0, lt: 9223372036854775807}];
+}
+
+message CancelReservationProductResponse {
+  map<string, string> productId = 1;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//  Get All Products
+//------------------------------------------------------------------------------------------------------------------
+
+message GetAllProductsRequest {
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
+}
+
+message GetAllProductsResponse {
+  repeated Product product = 1;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
+
+message Product {
+  int64  id = 1;
+  string name = 2;
+  string size = 3;
+  string quantity = 4;
+  string inReserve = 5;
+  int64  warehouseId = 6;
+}
