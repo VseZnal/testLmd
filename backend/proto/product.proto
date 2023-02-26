@@ -47,11 +47,12 @@ message ReservationProductResponse {
 //------------------------------------------------------------------------------------------------------------------
 
 message CancelReservationProductRequest {
-  repeated int64 id = 1 [(validate.rules).repeated.items.int64 = {gte:0, lt: 9223372036854775807}];
+  int64 warehouseId = 1 [(validate.rules).int64 = {gte:0, lt: 9223372036854775807}];
+  repeated int64 id = 2 [(validate.rules).repeated.items.int64 = {gte:0, lt: 9223372036854775807}];
 }
 
 message CancelReservationProductResponse {
-  string message = 1;
+  map<int64, string> productId = 1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -75,4 +76,6 @@ message Product {
   string name = 2;
   string size = 3;
   string quantity = 4;
+  string inReserve = 5;
+  int64  warehouseId = 6;
 }
