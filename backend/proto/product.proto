@@ -39,7 +39,7 @@ message ReservationProductRequest {
 }
 
 message ReservationProductResponse {
-  map<int64, string> productId = 1;
+  map<string, string> productId = 1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ message CancelReservationProductRequest {
 }
 
 message CancelReservationProductResponse {
-  map<int64, string> productId = 1;
+  map<string, string> productId = 1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
