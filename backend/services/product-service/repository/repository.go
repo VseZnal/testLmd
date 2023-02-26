@@ -13,8 +13,8 @@ import (
 )
 
 type Database interface {
-	ReservationProduct(ctx context.Context, id []int64, WarehouseId int64) (map[int64]string, error)
-	CancelReservationProduct(ctx context.Context, id []int64, WarehouseId int64) (map[int64]string, error)
+	ReservationProduct(ctx context.Context, id []int64, WarehouseId int64) (map[string]string, error)
+	CancelReservationProduct(ctx context.Context, id []int64, WarehouseId int64) (map[string]string, error)
 	GetAllProducts(ctx context.Context, id int64) ([]*product_service.Product, error)
 }
 
@@ -44,7 +44,7 @@ func (db DatabaseConn) ReservationProduct(
 	ctx context.Context,
 	id []int64,
 	WarehouseId int64,
-) (map[int64]string, error) {
+) (map[string]string, error) {
 	q := `
 			UPDATE products 
 			SET quantity = quantity - 1,
@@ -59,14 +59,16 @@ func (db DatabaseConn) ReservationProduct(
 				`
 
 	var wg sync.WaitGroup
-	res := make(map[int64]string)
+	res := make(map[string]string)
 	warehouseErr := func(k int, v int64, tx *sql.Tx) {
-		res[v] = "Товара на позиции " + strconv.Itoa(k+1) + " нет на складе"
+		mapK := "Товара номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
+		res[mapK] = " нет на складе"
 		tx.Rollback()
 	}
 
 	warehouseOk := func(k int, v int64, tx *sql.Tx) {
-		res[v] = "Товар на позиции " + strconv.Itoa(k) + " - резерв"
+		mapK := "Товар номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
+		res[mapK] = " поставлен в резерв"
 	}
 
 	for k, v := range id {
@@ -115,7 +117,7 @@ func (db DatabaseConn) CancelReservationProduct(
 	ctx context.Context,
 	id []int64,
 	WarehouseId int64,
-) (map[int64]string, error) {
+) (map[string]string, error) {
 	q := `
 			UPDATE products 
 			SET quantity = quantity + 1,
@@ -124,10 +126,11 @@ func (db DatabaseConn) CancelReservationProduct(
 			`
 
 	var wg sync.WaitGroup
-	res := make(map[int64]string)
+	res := make(map[string]string)
 
 	warehouseOk := func(k int, v int64, tx *sql.Tx) {
-		res[v] = "Товар на позиции " + strconv.Itoa(k) + " - снят с резерва"
+		mapK := "Товар номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
+		res[mapK] = " снят с резерва"
 	}
 
 	for k, v := range id {
