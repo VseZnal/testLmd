@@ -1,7 +1,5 @@
 # testLmd
 
-test task
-
 run go test ./... to run tests
 
 ## Installation
