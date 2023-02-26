@@ -774,6 +774,8 @@ func (m *Product) validate(all bool) error {
 
 	// no validation rules for InReserve
 
+	// no validation rules for WarehouseId
+
 	if len(errors) > 0 {
 		return ProductMultiError(errors)
 	}
