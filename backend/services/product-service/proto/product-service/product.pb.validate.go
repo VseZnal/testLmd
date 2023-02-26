@@ -772,6 +772,8 @@ func (m *Product) validate(all bool) error {
 
 	// no validation rules for Quantity
 
+	// no validation rules for InReserve
+
 	if len(errors) > 0 {
 		return ProductMultiError(errors)
 	}
