@@ -290,6 +290,17 @@ func (m *CancelReservationProductRequest) validate(all bool) error {
 
 	var errors []error
 
+	if val := m.GetWarehouseId(); val < 0 || val >= 9223372036854775807 {
+		err := CancelReservationProductRequestValidationError{
+			field:  "WarehouseId",
+			reason: "value must be inside range [0, 9223372036854775807)",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	for idx, item := range m.GetId() {
 		_, _ = idx, item
 
@@ -410,7 +421,7 @@ func (m *CancelReservationProductResponse) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Message
+	// no validation rules for ProductId
 
 	if len(errors) > 0 {
 		return CancelReservationProductResponseMultiError(errors)
