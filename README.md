@@ -2,6 +2,8 @@
 
 test task
 
+run go test ./... to run tests
+
 ## Installation
 
 Make sure that docker is installed (for windows or mac install docker desktop)
