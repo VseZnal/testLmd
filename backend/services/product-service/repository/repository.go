@@ -122,7 +122,7 @@ func (db DatabaseConn) CancelReservationProduct(
 			UPDATE products 
 			SET quantity = quantity + 1,
 			    in_reserve = in_reserve - 1
-			WHERE id = $1 AND quantity > 0 AND warehouse_id = $2
+			WHERE id = $1 AND warehouse_id = $2
 			`
 
 	var wg sync.WaitGroup
