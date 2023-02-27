@@ -98,7 +98,6 @@ func (db DatabaseConn) ReservationProduct(
 
 			_, err = tx.ExecContext(ctx, q, v, WarehouseId)
 			if err != nil {
-				warehouseErr(k, v, tx)
 				tx.Rollback()
 				return
 			}
@@ -106,7 +105,6 @@ func (db DatabaseConn) ReservationProduct(
 			warehouseOk(k, v, tx)
 
 			if err = tx.Commit(); err != nil {
-				warehouseErr(k, v, tx)
 				tx.Rollback()
 			}
 		}(k, v)
