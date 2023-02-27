@@ -2,6 +2,10 @@
 
 run go test ./... to run tests
 
+Isolation: LevelSerializable
+
+postman - https://www.postman.com/winter-meteor-514146/workspace/lmd/request/20977191-31b710ae-e628-4f03-8213-115baa679c18
+
 ## Installation
 
 Make sure that docker is installed (for windows or mac install docker desktop)
