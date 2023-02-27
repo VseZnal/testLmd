@@ -62,13 +62,13 @@ func (db DatabaseConn) ReservationProduct(
 	res := make(map[string]string)
 	warehouseErr := func(k int, v int64, tx *sql.Tx) {
 		mapK := "Товара номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
-		res[mapK] = " нет на складе"
+		res[mapK] = "нет на складе"
 		tx.Rollback()
 	}
 
 	warehouseOk := func(k int, v int64, tx *sql.Tx) {
 		mapK := "Товар номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
-		res[mapK] = " поставлен в резерв"
+		res[mapK] = "поставлен в резерв"
 	}
 
 	for k, v := range id {
@@ -98,6 +98,7 @@ func (db DatabaseConn) ReservationProduct(
 
 			_, err = tx.ExecContext(ctx, q, v, WarehouseId)
 			if err != nil {
+				warehouseErr(k, v, tx)
 				tx.Rollback()
 				return
 			}
@@ -105,6 +106,7 @@ func (db DatabaseConn) ReservationProduct(
 			warehouseOk(k, v, tx)
 
 			if err = tx.Commit(); err != nil {
+				warehouseErr(k, v, tx)
 				tx.Rollback()
 			}
 		}(k, v)
@@ -130,7 +132,7 @@ func (db DatabaseConn) CancelReservationProduct(
 
 	warehouseOk := func(k int, v int64, tx *sql.Tx) {
 		mapK := "Товар номер " + strconv.Itoa(k+1) + " с id - " + strconv.Itoa(int(v))
-		res[mapK] = " снят с резерва"
+		res[mapK] = "снят с резерва"
 	}
 
 	for k, v := range id {
